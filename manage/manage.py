@@ -1,7 +1,5 @@
 from sqlalchemy import Integer, String, ForeignKey, Column, Boolean, DateTime, Text
 
-from datetime import datetime
-
 from sqlalchemy.orm import declarative_base, relationship, backref
 
 Base = declarative_base()
@@ -13,7 +11,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     full_name = Column(String(50), nullable=False)
     email = Column(String(70), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow())
+
     hashed_password = Column(String(length=1024), nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
     is_superuser = Column(Boolean, default=False, nullable=False)
@@ -34,7 +32,7 @@ class Articles(Base):
     user = Column(Integer, ForeignKey('user.id'))
     article_name = Column(String(70), nullable=False)
     article_text = Column(Text)
-    created_at = Column(DateTime, default=datetime.utcnow())
+
     categories = relationship('Categories', secondary='categories_articles',
                               backref=backref('articles', lazy='dynamic'))
 
@@ -53,7 +51,6 @@ class Comments(Base):
     id = Column(Integer, primary_key=True)
     user = Column(Integer, ForeignKey('user.id'))
     article = Column(Integer, ForeignKey('articles.id'))
-    created_at = Column(DateTime, default=datetime.utcnow())
 
 
 class Liked_Articles(Base):
@@ -62,4 +59,3 @@ class Liked_Articles(Base):
     id = Column(Integer, primary_key=True)
     user = Column(Integer, ForeignKey('user.id'))
     article = Column(Integer, ForeignKey('articles.id'))
-    created_at = Column(DateTime, default=datetime.utcnow())

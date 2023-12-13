@@ -4,20 +4,18 @@ from fastapi import FastAPI
 from fastapi_users import fastapi_users, FastAPIUsers
 
 from auth.auth import auth_backend
+from auth.database import User
 from auth.manager import get_user_manager
 from auth.schemas import UserRead, UserCreate
-from pydantic_validator import Trade, User
-
-
-
-
-app = FastAPI()
-
+from pydantic_validator import Trade, Pydantic_User
 
 fastapi_users = FastAPIUsers[User, int](
     get_user_manager,
     [auth_backend],
 )
+
+app = FastAPI()
+
 
 
 app.include_router(
@@ -26,14 +24,11 @@ app.include_router(
     tags=["auth"],
 )
 
-
 app.include_router(
     fastapi_users.get_register_router(UserRead, UserCreate),
     prefix="/auth",
     tags=["auth"],
 )
-
-
 
 fake_users = [
     {'id': 1, 'username': 'alexk', 'status': 'admin'},
@@ -51,7 +46,7 @@ def hello():
     return 'hi'
 
 
-@app.get("/user/{user_id}", response_model=list[User])
+@app.get("/user/{user_id}", response_model=list[Pydantic_User])
 def get_user(user_id: int):
     return [user for user in fake_users if user.get('id') == user_id]
 

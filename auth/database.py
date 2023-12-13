@@ -5,21 +5,19 @@ from fastapi import Depends
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID, SQLAlchemyUserDatabase
 from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, declarative_base
 from sqlalchemy import String, Boolean, Integer, DateTime
+
+from manage.manage import Base
 
 DATABASE_URL = "sqlite+aiosqlite:///fastapi_db.sqlite3"
 
 
-class Base(DeclarativeBase):
-    pass
-
-
 class User(SQLAlchemyBaseUserTable[int], Base):
+    __table_args__ = {'extend_existing': True}
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     full_name: Mapped[str] = mapped_column(String(50), nullable=False)
 
-    created_at = mapped_column(DateTime, default=datetime.utcnow())
     email: Mapped[str] = mapped_column(
         String(length=320), unique=True, index=True, nullable=False
     )

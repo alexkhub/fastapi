@@ -10,13 +10,6 @@ class Trade(BaseModel):
     discount: int = Field(ge=0, le=100, default=0)
 
 
-class UserStatus(Enum):
-    worker = "worker"
-    admin = "admin"
-    user = "user"
-
-
-class User(BaseModel):
+class Pydantic_User(BaseModel):
     id: int
     username: str
-    status: Optional[UserStatus]
