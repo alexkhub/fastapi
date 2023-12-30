@@ -1,22 +1,11 @@
-from typing import List
+from fastapi import FastAPI, Depends
 
-from fastapi import FastAPI
-from fastapi_users import fastapi_users, FastAPIUsers
-
-from auth.auth import auth_backend
-from auth.database import User
-from auth.manager import get_user_manager
+from auth.base_config import auth_backend, fastapi_users, current_user
 from auth.schemas import UserRead, UserCreate
-from pydantic_validator import Trade, Pydantic_User
-
-fastapi_users = FastAPIUsers[User, int](
-    get_user_manager,
-    [auth_backend],
-)
+from auth.models import User
+from core.schemas import Pydantic_User
 
 app = FastAPI()
-
-
 
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
@@ -29,6 +18,12 @@ app.include_router(
     prefix="/auth",
     tags=["auth"],
 )
+
+
+@app.get("/protected-route")
+def protected_route(user: User = Depends(current_user)):
+    return f"Hello, {user.full_name}"
+
 
 fake_users = [
     {'id': 1, 'username': 'alexk', 'status': 'admin'},
@@ -61,9 +56,3 @@ def change_username(user_id: int, username: str):
 @app.get("/trades")
 def get_trades(limit: int = 10, offset: int = 0):
     return fake_trades[offset:][:limit]
-
-
-@app.post("/trades")
-def post_trade(trades: list[Trade]):
-    fake_trades.extend(trades)
-    return {"statys": 200, "data": trades}

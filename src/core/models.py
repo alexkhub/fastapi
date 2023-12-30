@@ -1,8 +1,8 @@
-from sqlalchemy import Integer, String, ForeignKey, Column, Boolean, DateTime, Text
+from sqlalchemy import Integer, String, ForeignKey, Column, Boolean, DateTime, Text, MetaData
 
 from sqlalchemy.orm import declarative_base, relationship, backref
 
-Base = declarative_base()
+from src.database import Base
 
 
 class User(Base):
