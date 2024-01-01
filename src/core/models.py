@@ -2,12 +2,12 @@ from sqlalchemy import Integer, String, ForeignKey, Column, Boolean, DateTime, T
 
 from sqlalchemy.orm import declarative_base, relationship, backref
 
-from src.database import Base
+from database import Base
 
 
 class User(Base):
     __tablename__ = 'user'
-
+    __table_args__ = {'extend_existing': True}
     id = Column(Integer, primary_key=True)
     full_name = Column(String(50), nullable=False)
     email = Column(String(70), nullable=False)
